@@ -10,8 +10,8 @@
 
 using namespace std;
 
-ClientToServer::ClientToServer(ConnectionHandler &connectionHandler1) {
-    this->connectionHandler = connectionHandler1;
+
+ClientToServer::ClientToServer(ConnectionHandler &connectionHandler) : connectionHandler(connectionHandler) {
 
 }
 

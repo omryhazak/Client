@@ -10,9 +10,10 @@
 
 class ClientToServer {
 private:
-    ConnectionHandler connectionHandler;
+    ConnectionHandler &connectionHandler;
 public:
     ClientToServer(ConnectionHandler &connectionHandler);
+
 
     void operator()();
 
