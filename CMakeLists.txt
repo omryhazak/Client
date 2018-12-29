@@ -6,6 +6,6 @@ set(CMAKE_CXX_STANDARD 14)
 include_directories(include)
 
 add_executable(Client
-        include/connectionHandler.h
-        src/connectionHandler.cpp
-        src/echoClient.cpp src/serverToClient.cpp include/serverToClient.h src/clientToServer.cpp include/clientToServer.h)
+        include/ConnectionHandler.h
+        src/ConnectionHandler.cpp
+        src/ServerToClient.cpp include/ServerToClient.h src/ClientToServer.cpp include/ClientToServer.h src/Client.cpp)
