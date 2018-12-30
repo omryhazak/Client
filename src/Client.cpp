@@ -32,10 +32,14 @@ int main (int argc, char *argv[]) {
 
     ServerToClient * serverToClient = new ServerToClient(connectionHandler);
 
-    serverToClient->operator()();
-
+    //starts clientToServer
     thread Th1(clientToServer);
 
+    //starts serverToClient
+    serverToClient->operator()();
+
+    //after got ACK of logout, stops clientToServer
+    clientToServer->setToFinish(true);
 
     return 0;
     }

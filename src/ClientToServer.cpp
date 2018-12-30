@@ -11,7 +11,7 @@
 using namespace std;
 
 
-ClientToServer::ClientToServer(ConnectionHandler &connectionHandler) : connectionHandler(connectionHandler), toTerminate(false) {
+ClientToServer::ClientToServer(ConnectionHandler &connectionHandler) : connectionHandler(connectionHandler), toTerminate(false), toFinish(false) {
 }
 
 
@@ -46,7 +46,7 @@ void ClientToServer::operator()() {
         }else if(splitted[0] == "LOGOUT"){
             shortToBytes(3, opCode);
             connectionHandler.sendBytes(opCode, 2);
-            toTerminate(true);
+            toTerminate = true;
         }
         else if (splitted[0] == "FOLLOW"){
             if (splitted.size() > 2) {
@@ -126,9 +126,17 @@ void ClientToServer::operator()() {
             }
         }
     }
+
+    while (!toFinish){
+        //maybe to set a lock that makes him wait..............
+    }
 }
 
 void ClientToServer::shortToBytes(short num, char* bytesArr) {
     bytesArr[0] = ((num >> 8) & 0xFF);
     bytesArr[1] = (num & 0xFF);
+}
+
+void ClientToServer::setToFinish(bool toFinish) {
+    ClientToServer::toFinish = toFinish;
 }
