@@ -11,12 +11,12 @@
 class ClientToServer {
 private:
     ConnectionHandler &connectionHandler;
+    bool toTerminate;
+
 public:
-    ClientToServer(ConnectionHandler &connectionHandler);
-
-
+    ClientToServer(ConnectionHandler &connectionHandler);    //constructor
     void operator()();
-
+    void shortToBytes(short num, char* bytesArr);
 };
 
 
