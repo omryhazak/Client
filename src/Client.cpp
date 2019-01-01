@@ -28,19 +28,25 @@ int main (int argc, char *argv[]) {
         std::cerr << "Cannot connect to " << host << ":" << port << std::endl;
         return 1;
     }
-    ClientToServer * clientToServer = new ClientToServer(connectionHandler);
 
-    ServerToClient * serverToClient = new ServerToClient(connectionHandler);
+    condition_variable cv;
+    mutex mutex1;
+
+    ClientToServer * clientToServer = new ClientToServer(connectionHandler, cv, mutex1);
+
+    ServerToClient * serverToClient = new ServerToClient(connectionHandler, cv, mutex1);
 
     //starts clientToServer
-    thread Th1(clientToServer);
+    thread Th1(&clientToServer);
 
     //starts serverToClient
     serverToClient->operator()();
 
     //after got ACK of logout, stops clientToServer
-    clientToServer->setToFinish(true);
+    clientToServer->setToTerminate(true);
+
+    //notifies clientToServer he can keep running, till he diessssss
+    cv.notify_all();
 
     return 0;
     }
-}

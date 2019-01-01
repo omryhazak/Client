@@ -7,19 +7,27 @@
 
 
 #include "ConnectionHandler.h"
+#include "ConnectionHandler.h"
+#include <mutex>
+#include <condition_variable>
+
+using namespace std;
 
 class ClientToServer {
 private:
     ConnectionHandler &connectionHandler;
     bool toTerminate;
-    bool toFinish;
+    mutex &mutex1;
+    condition_variable &cv;
 
 public:
-    ClientToServer(ConnectionHandler &connectionHandler);    //constructor
+    ClientToServer(ConnectionHandler &connectionHandler,condition_variable &cv ,mutex &mutex1);    //constructor
     void operator()();
     void shortToBytes(short num, char* bytesArr);
 
     void setToFinish(bool toFinish);
+
+    void setToTerminate(bool toTerminate);
 };
 
 

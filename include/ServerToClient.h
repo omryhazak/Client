@@ -5,16 +5,21 @@
 #ifndef CLIENT_SERVERTOCLIENT_H
 #define CLIENT_SERVERTOCLIENT_H
 
+#include <mutex>
+#include <condition_variable>
 #include "ConnectionHandler.h"
 
+using namespace std;
 
 class ServerToClient {
 private:
     ConnectionHandler &connectionHandler;
     bool toTerminate;
+    mutex &mutex1;
+    condition_variable &cv;
 
 public:
-    ServerToClient(ConnectionHandler &connectionHandler);
+    ServerToClient(ConnectionHandler &connectionHandler,condition_variable &cv ,mutex &mutex1);
     void operator()();
     short bytesToShort(char* bytesArr);
 };

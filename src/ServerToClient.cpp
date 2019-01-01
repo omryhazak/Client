@@ -5,7 +5,7 @@
 #include "ServerToClient.h"
 using namespace std;
 
-ServerToClient::ServerToClient(ConnectionHandler &connectionHandler) : connectionHandler(connectionHandler), toTerminate(false) {
+ServerToClient::ServerToClient(ConnectionHandler &connectionHandler, condition_variable &cv ,mutex &mutex) : connectionHandler(connectionHandler), toTerminate(false),cv(cv) ,mutex1(mutex) {
 
 }
 
@@ -117,6 +117,7 @@ void ServerToClient::operator()() {
             ans = ans + " " + to_string(op2);
 
             cout << ans << endl;
+            cv.notify_all();// realese the keyboard
         }
     }
 
