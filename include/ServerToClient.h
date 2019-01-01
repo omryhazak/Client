@@ -20,7 +20,7 @@ private:
 
 public:
     ServerToClient(ConnectionHandler &connectionHandler,condition_variable &cv ,mutex &mutex1);
-    void operator()();
+    void run();
     short bytesToShort(char* bytesArr);
 };
 

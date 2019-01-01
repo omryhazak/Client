@@ -15,12 +15,14 @@ using namespace std;
 */
 int main (int argc, char *argv[]) {
     //gets host and port
-    if (argc < 3) {
+    /*if (argc < 3) {
         std::cerr << "Usage: " << argv[0] << " host port" << std::endl << std::endl;
         return -1;
     }
     std::string host = argv[1];
-    short port = atoi(argv[2]);
+    short port = atoi(argv[2]);*/
+    string host = "127.0.0.1";
+    short port =1111;
 
     //creats connection handler to talk through, we will later send to clientToServer and serverToClient
     ConnectionHandler connectionHandler(host, port);
@@ -37,10 +39,10 @@ int main (int argc, char *argv[]) {
     ServerToClient * serverToClient = new ServerToClient(connectionHandler, cv, mutex1);
 
     //starts clientToServer
-    thread Th1(&clientToServer);
+    thread Th1(&ClientToServer::run , clientToServer);
 
     //starts serverToClient
-    serverToClient->operator()();
+    serverToClient->run();
 
     //after got ACK of logout, stops clientToServer
     clientToServer->setToTerminate(true);

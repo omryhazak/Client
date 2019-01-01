@@ -15,7 +15,7 @@ ClientToServer::ClientToServer(ConnectionHandler &connectionHandler, condition_v
 }
 
 
-void ClientToServer::operator()() {
+void ClientToServer::run() {
     while (!toTerminate) {
         const short bufsize = 1024;
         char buf[bufsize];
@@ -23,14 +23,16 @@ void ClientToServer::operator()() {
         string line(buf);
         int len = line.length();
         vector<string> splitted;
-        boost::split(splitted, line, ' ');
+
+        boost::split(splitted, line, boost::is_any_of(" "));
+
         char opCode[2];
 
         if (splitted[0] == "REGISTER"){
             string userName(splitted[1]);
             string password(splitted[2]);
             shortToBytes(1, opCode);
-            short opc = 2;
+
             connectionHandler.sendBytes(opCode, 2);
             connectionHandler.sendLine(userName);
             connectionHandler.sendLine(password);

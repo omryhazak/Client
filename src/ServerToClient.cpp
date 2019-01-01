@@ -9,7 +9,7 @@ ServerToClient::ServerToClient(ConnectionHandler &connectionHandler, condition_v
 
 }
 
-void ServerToClient::operator()() {
+void ServerToClient::run() {
     while (!toTerminate){
         string message;
 
@@ -105,6 +105,7 @@ void ServerToClient::operator()() {
                 cout << ans << endl;
                 toTerminate =   true;
             }
+            cout << ans << endl;
         }
 
         else if(op == 11){
@@ -123,7 +124,7 @@ void ServerToClient::operator()() {
 
 }
 
-short bytesToShort(char* bytesArr) {
+short ServerToClient::bytesToShort(char *bytesArr) {
     short result = (short)((bytesArr[0] & 0xff) << 8);
     result += (short)(bytesArr[1] & 0xff);
     return result;
