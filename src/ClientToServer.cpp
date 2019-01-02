@@ -11,7 +11,7 @@
 using namespace std;
 
 
-ClientToServer::ClientToServer(ConnectionHandler &connectionHandler, condition_variable &cv ,mutex &mutex) : connectionHandler(connectionHandler), toTerminate(false), cv(cv) ,mutex1(mutex) {
+ClientToServer::ClientToServer(ConnectionHandler *connectionHandler, condition_variable &cv ,mutex &mutex) : connectionHandler(connectionHandler), toTerminate(false), cv(cv) ,mutex1(mutex) {
 }
 
 
@@ -33,21 +33,21 @@ void ClientToServer::run() {
             string password(splitted[2]);
             shortToBytes(1, opCode);
 
-            connectionHandler.sendBytes(opCode, 2);
-            connectionHandler.sendLine(userName);
-            connectionHandler.sendLine(password);
+            connectionHandler->sendBytes(opCode, 2);
+            connectionHandler->sendLine(userName);
+            connectionHandler->sendLine(password);
 
         }else if(splitted[0] == "LOGIN"){
             string userName(splitted[1]);
             string password(splitted[2]);
             shortToBytes(2, opCode);
-            connectionHandler.sendBytes(opCode, 2);
-            connectionHandler.sendLine(userName);
-            connectionHandler.sendLine(password);
+            connectionHandler->sendBytes(opCode, 2);
+            connectionHandler->sendLine(userName);
+            connectionHandler->sendLine(password);
 
         }else if(splitted[0] == "LOGOUT") {
             shortToBytes(3, opCode);
-            connectionHandler.sendBytes(opCode, 2);
+            connectionHandler->sendBytes(opCode, 2);
 
             unique_lock<mutex> lock{mutex1};
             cv.wait(lock);
@@ -58,18 +58,18 @@ void ClientToServer::run() {
 
                 //sends the opCode
                 shortToBytes(4, opCode);
-                connectionHandler.sendBytes(opCode, 2);
+                connectionHandler->sendBytes(opCode, 2);
 
                 //sends the follow/unfollow
                 string toFollow = splitted[1];
                 char followCode[1];
                 if (stoi(toFollow) == 0){
                     shortToBytes(0, followCode);
-                    connectionHandler.sendBytes(followCode, 1);
+                    connectionHandler->sendBytes(followCode, 1);
                 }
                 else {
                     shortToBytes(1, followCode);
-                    connectionHandler.sendBytes(followCode, 1);
+                    connectionHandler->sendBytes(followCode, 1);
                 }
 
                 //sends number of users
@@ -79,7 +79,7 @@ void ClientToServer::run() {
 
                 //sends all the names
                 for (unsigned int i = 0; i < numOf; i++) {
-                    connectionHandler.sendLine(splitted[3 + i]);
+                    connectionHandler->sendLine(splitted[3 + i]);
                 }
             }
         }
@@ -94,8 +94,8 @@ void ClientToServer::run() {
                 content = content + " " + splitted[i];
             }
             shortToBytes(5, opCode);
-            connectionHandler.sendBytes(opCode, 2);
-            connectionHandler.sendLine(content);
+            connectionHandler->sendBytes(opCode, 2);
+            connectionHandler->sendLine(content);
         }
 
         else if (splitted[0] == "PM") {
@@ -111,22 +111,22 @@ void ClientToServer::run() {
                     content = content + " " + splitted[i];
                 }
                 shortToBytes(6, opCode);
-                connectionHandler.sendBytes(opCode, 2);
-                connectionHandler.sendLine(userName);
-                connectionHandler.sendLine(content);
+                connectionHandler->sendBytes(opCode, 2);
+                connectionHandler->sendLine(userName);
+                connectionHandler->sendLine(content);
             }
         }
         else if (splitted[0] == "USERLIST"){
             string all(opCode);
             shortToBytes(7, opCode);
-            connectionHandler.sendBytes(opCode, 2);
+            connectionHandler->sendBytes(opCode, 2);
         }
         else if (splitted[0] == "STAT"){
             if (splitted.size() == 2){
                 string userName = splitted[1];
                 shortToBytes(8, opCode);
-                connectionHandler.sendBytes(opCode, 2);
-                connectionHandler.sendLine(userName);
+                connectionHandler->sendBytes(opCode, 2);
+                connectionHandler->sendLine(userName);
             }
         }
     }
@@ -139,4 +139,9 @@ void ClientToServer::shortToBytes(short num, char* bytesArr) {
 
 void ClientToServer::setToTerminate(bool toTerminate) {
     ClientToServer::toTerminate = toTerminate;
+}
+
+ClientToServer::~ClientToServer () {
+    delete connectionHandler;
+
 }

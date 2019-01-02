@@ -30,22 +30,22 @@ int main (int argc, char *argv[]) {
         std::cerr << "Cannot connect to " << host << ":" << port << std::endl;
         return 1;
     }
-
     condition_variable cv;
     mutex mutex1;
 
-    ClientToServer * clientToServer = new ClientToServer(connectionHandler, cv, mutex1);
 
-    ServerToClient * serverToClient = new ServerToClient(connectionHandler, cv, mutex1);
-
+    ClientToServer clientToServer(&connectionHandler, cv, mutex1);
+  //  ServerToClient serverToClient(&connectionHandler, cv, mutex1);
+//    ClientToServer * clientToServer = new ClientToServer(&connectionHandler, cv, mutex1);
+    ServerToClient * serverToClient = new ServerToClient(&connectionHandler, cv, mutex1);
     //starts clientToServer
-    thread Th1(&ClientToServer::run , clientToServer);
+    thread Th1(&ClientToServer::run , &clientToServer);
 
     //starts serverToClient
     serverToClient->run();
-
+    cout<<"keyboard should be dead"<< endl;
     //after got ACK of logout, stops clientToServer
-    clientToServer->setToTerminate(true);
+    clientToServer.setToTerminate(true);
 
     //notifies clientToServer he can keep running, till he diessssss
     cv.notify_all();

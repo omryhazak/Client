@@ -2,10 +2,12 @@
 // Created by omryh@wincs.cs.bgu.ac.il on 12/29/18.
 //
 
+#include <ServerToClient.h>
+
 #include "ServerToClient.h"
 using namespace std;
 
-ServerToClient::ServerToClient(ConnectionHandler &connectionHandler, condition_variable &cv ,mutex &mutex) : connectionHandler(connectionHandler), toTerminate(false),cv(cv) ,mutex1(mutex) {
+ServerToClient::ServerToClient(ConnectionHandler *connectionHandler, condition_variable &cv ,mutex &mutex) : connectionHandler(connectionHandler), toTerminate(false),cv(cv) ,mutex1(mutex) {
 
 }
 
@@ -16,7 +18,7 @@ void ServerToClient::run() {
         char * opCode = new char[2];
 
         //gets opcode from user and converting it to short
-        connectionHandler.getBytes(opCode, 2);
+        connectionHandler->getBytes(opCode, 2);
         short op = bytesToShort(opCode);
 
         string ans;
@@ -26,7 +28,7 @@ void ServerToClient::run() {
 
             //gets PM or PUBLIC from user
             char * type = new char[1];
-            connectionHandler.getBytes(type, 1);
+            connectionHandler->getBytes(type, 1);
             short t = bytesToShort(type);
 
             //checks which type of message is that
@@ -39,13 +41,13 @@ void ServerToClient::run() {
 
             //takes chars until we get terminate zero in order to get all the name
             string name = "";
-            connectionHandler.getFrameAscii(name, '\0');
+            connectionHandler->getFrameAscii(name, '\0');
             name = name.substr(0, name.size()-2);
             ans = ans + " name";
 
             //takes message content
             string content = "";
-            connectionHandler.getFrameAscii(content, '\0');
+            connectionHandler->getFrameAscii(content, '\0');
             content = content.substr(0, name.size()-2);
             ans = ans + " " + content;
 
@@ -58,7 +60,7 @@ void ServerToClient::run() {
             char * opCode2 = new char[2];
 
             //gets opcode from user and converting it to short
-            connectionHandler.getBytes(opCode2, 2);
+            connectionHandler->getBytes(opCode2, 2);
             short op2 = bytesToShort(opCode2);
             ans = ans + " " + to_string(op2);
 
@@ -67,14 +69,14 @@ void ServerToClient::run() {
 
                 //gets num of users succeded following\unfollowing from user and converting it to short
                 char * numOf = new char[2];
-                connectionHandler.getBytes(numOf, 2);
+                connectionHandler->getBytes(numOf, 2);
                 short numOfUsers = bytesToShort(numOf);
                 ans = ans + " " + to_string(numOfUsers);
 
                 int i = 0;
                 while (i < numOfUsers){
                     string name;
-                    connectionHandler.getFrameAscii(name, '\0');
+                    connectionHandler->getFrameAscii(name, '\0');
                     name = name.substr(0, name.size()-2);
                     ans = ans + " " + name;
                 }
@@ -83,19 +85,19 @@ void ServerToClient::run() {
             else if (op2 == 8) {
                 //gets num of posts
                 char *numOfP = new char[2];
-                connectionHandler.getBytes(numOfP, 2);
+                connectionHandler->getBytes(numOfP, 2);
                 short numOfPosts = bytesToShort(numOfP);
                 ans = ans + " " + to_string(numOfPosts);
 
                 //gets num of followers
                 char *numOfF = new char[2];
-                connectionHandler.getBytes(numOfF, 2);
+                connectionHandler->getBytes(numOfF, 2);
                 short numOfFollowers = bytesToShort(numOfF);
                 ans = ans + " " + to_string(numOfFollowers);
 
                 //gets num of following
                 char *numOfFo = new char[2];
-                connectionHandler.getBytes(numOfFo, 2);
+                connectionHandler->getBytes(numOfFo, 2);
                 short numOfFollowing = bytesToShort(numOfFo);
                 ans = ans + " " + to_string(numOfFollowing);
 
@@ -113,13 +115,14 @@ void ServerToClient::run() {
 
             //gets opcode from user and converting it to short
             char * opCode2 = new char[2];
-            connectionHandler.getBytes(opCode2, 2);
+            connectionHandler->getBytes(opCode2, 2);
             short op2 = bytesToShort(opCode2);
             ans = ans + " " + to_string(op2);
 
             cout << ans << endl;
             cv.notify_all();// realese the keyboard
         }
+        delete opCode;
     }
 
 }
@@ -128,6 +131,12 @@ short ServerToClient::bytesToShort(char *bytesArr) {
     short result = (short)((bytesArr[0] & 0xff) << 8);
     result += (short)(bytesArr[1] & 0xff);
     return result;
+}
+
+ServerToClient::~ServerToClient () {
+    delete connectionHandler;
+
+
 }
 
 

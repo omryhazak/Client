@@ -13,15 +13,17 @@ using namespace std;
 
 class ServerToClient {
 private:
-    ConnectionHandler &connectionHandler;
+    ConnectionHandler *connectionHandler;
     bool toTerminate;
     mutex &mutex1;
     condition_variable &cv;
 
 public:
-    ServerToClient(ConnectionHandler &connectionHandler,condition_variable &cv ,mutex &mutex1);
+    ServerToClient(ConnectionHandler *connectionHandler,condition_variable &cv ,mutex &mutex1);
     void run();
     short bytesToShort(char* bytesArr);
+    ~ServerToClient ();
+
 };
 
 
