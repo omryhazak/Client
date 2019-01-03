@@ -37,18 +37,20 @@ int main (int argc, char *argv[]) {
     ClientToServer clientToServer(&connectionHandler, cv, mutex1);
   //  ServerToClient serverToClient(&connectionHandler, cv, mutex1);
 //    ClientToServer * clientToServer = new ClientToServer(&connectionHandler, cv, mutex1);
-    ServerToClient * serverToClient = new ServerToClient(&connectionHandler, cv, mutex1);
+    ServerToClient serverToClient(&connectionHandler, cv, mutex1);
     //starts clientToServer
     thread Th1(&ClientToServer::run , &clientToServer);
 
     //starts serverToClient
-    serverToClient->run();
-    cout<<"keyboard should be dead"<< endl;
+    serverToClient.run();
+
     //after got ACK of logout, stops clientToServer
     clientToServer.setToTerminate(true);
 
     //notifies clientToServer he can keep running, till he diessssss
     cv.notify_all();
+
+    Th1.join();
 
     return 0;
     }

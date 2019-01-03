@@ -24,9 +24,7 @@ public:
     ClientToServer(ConnectionHandler *connectionHandler,condition_variable &cv ,mutex &mutex1);    //constructor
     void run();
     void shortToBytes(short num, char* bytesArr);
-    void setToFinish(bool toFinish);
     void setToTerminate(bool toTerminate);
-    ~ClientToServer ();
 };
 
 

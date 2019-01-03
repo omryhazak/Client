@@ -22,7 +22,6 @@ public:
     ServerToClient(ConnectionHandler *connectionHandler,condition_variable &cv ,mutex &mutex1);
     void run();
     short bytesToShort(char* bytesArr);
-    ~ServerToClient ();
 
 };
 

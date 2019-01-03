@@ -15,7 +15,7 @@ void ServerToClient::run() {
     while (!toTerminate){
         string message;
 
-        char * opCode = new char[2];
+        char opCode[2];
 
         //gets opcode from user and converting it to short
         connectionHandler->getBytes(opCode, 2);
@@ -27,7 +27,7 @@ void ServerToClient::run() {
             ans = "NOTIFICATION";
 
             //gets PM or PUBLIC from user
-            char * type = new char[1];
+            char type[1];
             connectionHandler->getBytes(type, 1);
             short t = bytesToShort(type);
 
@@ -57,7 +57,7 @@ void ServerToClient::run() {
         else if(op == 10){
             ans = "ACK";
 
-            char * opCode2 = new char[2];
+            char opCode2[2];
 
             //gets opcode from user and converting it to short
             connectionHandler->getBytes(opCode2, 2);
@@ -68,7 +68,7 @@ void ServerToClient::run() {
             if (op2 == 4 || op2 == 7){
 
                 //gets num of users succeded following\unfollowing from user and converting it to short
-                char * numOf = new char[2];
+                char numOf[2];
                 connectionHandler->getBytes(numOf, 2);
                 short numOfUsers = bytesToShort(numOf);
                 ans = ans + " " + to_string(numOfUsers);
@@ -84,26 +84,25 @@ void ServerToClient::run() {
             }
             else if (op2 == 8) {
                 //gets num of posts
-                char *numOfP = new char[2];
+                char numOfP[2];
                 connectionHandler->getBytes(numOfP, 2);
                 short numOfPosts = bytesToShort(numOfP);
                 ans = ans + " " + to_string(numOfPosts);
 
                 //gets num of followers
-                char *numOfF = new char[2];
+                char numOfF[2];
                 connectionHandler->getBytes(numOfF, 2);
                 short numOfFollowers = bytesToShort(numOfF);
                 ans = ans + " " + to_string(numOfFollowers);
 
                 //gets num of following
-                char *numOfFo = new char[2];
+                char numOfFo[2];
                 connectionHandler->getBytes(numOfFo, 2);
                 short numOfFollowing = bytesToShort(numOfFo);
                 ans = ans + " " + to_string(numOfFollowing);
 
             }
             else if (op2 == 3){
-                cout << ans << endl;
                 toTerminate =   true;
             }
             cout << ans << endl;
@@ -113,7 +112,7 @@ void ServerToClient::run() {
             ans = "ERROR";
 
             //gets opcode from user and converting it to short
-            char * opCode2 = new char[2];
+            char opCode2[2];
             connectionHandler->getBytes(opCode2, 2);
             short op2 = bytesToShort(opCode2);
             ans = ans + " " + to_string(op2);
@@ -121,7 +120,6 @@ void ServerToClient::run() {
             cout << ans << endl;
             cv.notify_all();// realese the keyboard
         }
-        delete opCode;
     }
 
 }
@@ -130,12 +128,6 @@ short ServerToClient::bytesToShort(char *bytesArr) {
     short result = (short)((bytesArr[0] & 0xff) << 8);
     result += (short)(bytesArr[1] & 0xff);
     return result;
-}
-
-ServerToClient::~ServerToClient () {
-    delete connectionHandler;
-
-
 }
 
 

@@ -64,11 +64,11 @@ void ClientToServer::run() {
                 string toFollow = splitted[1];
                 char followCode[1];
                 if (stoi(toFollow) == 0){
-                    shortToBytes(0, followCode);
+                    followCode[0] = static_cast<char> (0);
                     connectionHandler->sendBytes(followCode, 1);
                 }
                 else {
-                    shortToBytes(1, followCode);
+                    followCode[0] = static_cast<char> (1);
                     connectionHandler->sendBytes(followCode, 1);
                 }
 
@@ -145,9 +145,4 @@ void ClientToServer::shortToBytes(short num, char* bytesArr) {
 
 void ClientToServer::setToTerminate(bool toTerminate) {
     ClientToServer::toTerminate = toTerminate;
-}
-
-ClientToServer::~ClientToServer () {
-    delete connectionHandler;
-
 }
