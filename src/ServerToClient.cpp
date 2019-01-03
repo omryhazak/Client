@@ -33,22 +33,22 @@ void ServerToClient::run() {
 
             //checks which type of message is that
             if (t == 0){
-                ans = ans + "PM";
+                ans = ans + " PM ";
             }
             else{
-                ans = ans + " PUBLIC";
+                ans = ans + " PUBLIC ";
             }
 
             //takes chars until we get terminate zero in order to get all the name
             string name = "";
             connectionHandler->getFrameAscii(name, '\0');
-            name = name.substr(0, name.size()-2);
-            ans = ans + " name";
+            name = name.substr(0, name.size()-1);
+            ans = ans + name;
 
             //takes message content
             string content = "";
             connectionHandler->getFrameAscii(content, '\0');
-            content = content.substr(0, name.size()-2);
+            content = content.substr(0, content.length()-1);
             ans = ans + " " + content;
 
             cout << ans << endl;
