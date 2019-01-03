@@ -74,8 +74,14 @@ void ClientToServer::run() {
 
                 //sends number of users
                 string numOfUsers = splitted[2];
+                //assigning the string to short
                 int numOf = stoi(numOfUsers);
                 short realNumOfUsers = (short) numOf;
+
+                //assigning the short to bytes and sends it
+                char number[1];
+                shortToBytes(realNumOfUsers, number);
+                connectionHandler->sendBytes(number, 2);
 
                 //sends all the names
                 for (unsigned int i = 0; i < numOf; i++) {

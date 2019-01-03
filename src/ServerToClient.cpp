@@ -48,7 +48,7 @@ void ServerToClient::run() {
             //takes message content
             string content = "";
             connectionHandler->getFrameAscii(content, '\0');
-            content = content.substr(0, content.length()-1);
+            content = content.substr(0, content.length() - 1);
             ans = ans + " " + content;
 
             cout << ans << endl;
@@ -77,10 +77,10 @@ void ServerToClient::run() {
                 while (i < numOfUsers){
                     string name;
                     connectionHandler->getFrameAscii(name, '\0');
-                    name = name.substr(0, name.size()-2);
+                    name = name.substr(0, name.size()-1);
                     ans = ans + " " + name;
+                    i++;
                 }
-                cout << ans << endl;
             }
             else if (op2 == 8) {
                 //gets num of posts
@@ -101,7 +101,6 @@ void ServerToClient::run() {
                 short numOfFollowing = bytesToShort(numOfFo);
                 ans = ans + " " + to_string(numOfFollowing);
 
-                cout << ans << endl;
             }
             else if (op2 == 3){
                 cout << ans << endl;
