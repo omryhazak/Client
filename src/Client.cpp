@@ -15,14 +15,14 @@ using namespace std;
 */
 int main (int argc, char *argv[]) {
     //gets host and port
-    /*if (argc < 3) {
+    if (argc < 3) {
         std::cerr << "Usage: " << argv[0] << " host port" << std::endl << std::endl;
         return -1;
     }
     std::string host = argv[1];
-    short port = atoi(argv[2]);*/
-    string host = "127.0.0.1";
-    short port =1111;
+    short port = atoi(argv[2]);
+//    string host = "127.0.0.1";
+//    short port =1111;
 
     //creats connection handler to talk through, we will later send to clientToServer and serverToClient
     ConnectionHandler connectionHandler(host, port);
